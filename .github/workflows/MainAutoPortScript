@@ -1,0 +1,125 @@
+import tkinter as tk
+from tkinter import simpledialog, messagebox
+from tkinter import ttk
+import os
+import time
+from datetime import datetime
+from selenium import webdriver
+from selenium.webdriver.edge.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+
+#  where i keep the driver
+driver_path = r"C:\Users\thoma\Downloads\edgedriver_win64\msedgedriver.exe"
+
+def send_report(text, type1, type2, place, submit_now=True):
+    if not os.path.isfile(driver_path):
+        messagebox.showerror("No driver", "cant find msedgedriver.exe")
+        return
+
+    srv = Service(driver_path)
+    driver = webdriver.Edge(service=srv)
+    driver.get("https://nunet.nuvancehealth.org/hqsecurity/home.php")
+    time.sleep(2)
+
+    today = datetime.now().strftime("%m/%d/%Y")
+    mil = datetime.now().strftime("%H%M")
+
+    driver.find_element(By.ID,"securityDate").send_keys(today)
+    driver.find_element(By.ID,"reportedDate").send_keys(today)
+    Select(driver.find_element(By.ID,"facilityID")).select_by_visible_text("NDH")
+    driver.find_element(By.ID,"securityTime").send_keys(mil)
+
+    Select(driver.find_element(By.ID,"incidentTypeID")).select_by_visible_text(type1)
+    Select(driver.find_element(By.ID,"incidentSubTypeID")).select_by_visible_text(type2)
+    driver.find_element(By.ID,"incidentDescription").send_keys(text)
+    driver.find_element(By.ID,"locationDescription").send_keys(place)
+
+    Select(driver.find_element(By.ID,"injuries")).select_by_visible_text("No")
+    Select(driver.find_element(By.ID,"policeNotified")).select_by_visible_text("No")
+
+    try:
+        driver.find_element(By.ID,"reportingPerson_name").clear()
+        driver.find_element(By.ID,"reportingPerson_name").send_keys("tmarvin")
+    except:
+        pass
+
+    if submit_now:
+        driver.find_element(By.CSS_SELECTOR,"button[type='submit']").click()
+        time.sleep(4)
+        driver.quit()
+        messagebox.showinfo("Done","Report went through")
+    else:
+        return driver
+
+# the buttons i use every single shift
+def tour1(): send_report("NDH Tour Complete. End of Report.","Employee Incidents Or Accidents","Inspection - Guard Tours","NDH")
+def tour2(): send_report("NDH Area Tour Complete. End of Report.","Employee Incidents Or Accidents","Inspection - Guard Tours","NDH")
+def edpost(): send_report("Stationed at ED post. End of report.","Employee Incidents Or Accidents","Special Details","ED POST")
+def boiler(): send_report("Thompson House boilers Checked. End of report.","Employee Incidents Or Accidents","Special Details","Thompson House")
+def heartcones(): send_report("Heart center parking spaces blocked off. End of report.","Employee Incidents Or Accidents","Special Details","Heart Center Parking")
+def lightsout(): send_report("NDH Lights Out Tour Complete. End of report.","Employee Incidents Or Accidents","Inspection - Guard Tours","NDH")
+def lotk(): send_report("Placed Cones at Lot K. End of report.","Employee Incidents Or Accidents","Special Details","Lot K")
+def emails(): send_report("Checked work emails. End of report.","Employee Incidents Or Accidents","Special Details","NDH")
+
+def custom():
+    x = simpledialog.askstring("Custom","What happened?")
+    if x and x.strip() != "":
+        send_report(x.strip(),"Employee Incidents Or Accidents","Inspection - Guard Tours","NDH",False)
+
+def obbadge():
+    a=simpledialog.askstring("OB","Name?"); b=simpledialog.askstring("OB","Badge#?"); c=simpledialog.askstring("OB","Room#?")
+    if a and b and c:
+        send_report(f"OB badge access requested by {a}. Badge Number #{b}. Room number {c}. 3 days access granted. End of report.","Employee Incidents Or Accidents","Special Details","OB")
+
+def radio():
+    r=simpledialog.askstring("Radio/Key","Radio number")
+    k=simpledialog.askstring("Radio/Key","Key set")
+    if r and k:
+        send_report(f"Using Radio #{r} and Key set #{k} for work. End of report.","Employee Incidents Or Accidents","Special Details","NDH")
+
+def patrol():
+    spots = []
+    def addspot():
+        s = entry.get()
+        if s:
+            spots.append(s); entry.delete(0,"end")
+            lbl.config(text=" → ".join(spots))
+    win = tk.Toplevel(root)
+    win.title("patrol")
+    win.geometry("380x180")
+    win.configure(bg="#000000")
+    tk.Label(win,text="add spots one by one",bg="black",fg="white").pack(pady=8)
+    entry = tk.Entry(win,width=30); entry.pack(pady=4)
+    tk.Button(win,text="Add",command=addspot).pack(pady=4)
+    tk.Button(win,text="OK → Submit",command=win.destroy).pack(pady=4)
+    lbl = tk.Label(win,text="",bg="black",fg="cyan"); lbl.pack()
+    win.wait_window()
+    if not spots:
+        send_report("Foot patrol conducted NDH General. End of report.","Employee Incidents Or Accidents","Inspection - Foot Patrol","NDH")
+    else:
+        send_report("Foot patrol conducted " + ", ".join(spots) + ". End of report.","Employee Incidents Or Accidents","Inspection - Foot Patrol",", ".join(spots))
+
+# GUI - black background becuase it looks better
+root = tk.Tk()
+root.title("AutoPort")
+root.configure(bg="black")
+root.geometry("360x640")
+
+tk.Label(root,text="AutoPort v1.8",font=("Arial",20,"bold"),bg="black",fg="red").pack(pady=12)
+
+buttons = [
+    ("NDH Tour",tour1),("Area Tour",tour2),("ED Post",edpost),
+    ("Boiler Check",boiler),("OB Badge",obbadge),("Emails",emails),
+    ("Radio/Key",radio),("Foot Patrol",patrol),("Custom Report",custom),
+    ("Heart Cones",heartcones),("Lights Out",lightsout),("Lot K",lotk)
+]
+
+for txt,cmd in buttons:
+    b = tk.Button(root,text=txt,command=cmd,width=20,height=2,bg="black",fg="red",relief="raised")
+    b.pack(pady=5)
+
+tk.Label(root,text="tmarvin - 1/31/2025",bg="black",fg="gray").pack(side="bottom",pady=10)
+
+print("AutoPort ready")   # left this in months ago, still here
+root.mainloop()
