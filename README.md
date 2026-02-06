@@ -1,81 +1,92 @@
 # AutoPort - Automated Incident Report Generator
 
-A Python GUI tool that automates incident report generation for security operations, cutting report creation time in half.
+I built this Python tool to automate security incident reports at my hospital job. It turned a 45-minute manual process into a 5-minute one-click operation.
 
-## The Problem
+## Why I Built This
 
-Security officers at healthcare facilities deal with 100+ incidents every month. Each one needs detailed documentation for hospital leadership, law enforcement, and legal compliance (reports have to be court-admissible).
+Working security at a healthcare facility means documenting everything. Tours, badge requests, equipment checks, patrol routes - all of it needs to go into the hospital's web-based incident system. Every single shift.
 
-Writing these reports manually was eating up huge amounts of time, creating inconsistencies between different officers' reports, and keeping the security team stuck at desks instead of doing actual security work.
+The problem was that filling out the same web forms over and over was killing productivity. Officers were spending more time typing reports than actually doing security work. Plus, manually entering the same info repeatedly led to typos and inconsistent formatting.
 
-## What AutoPort Does
+I needed something faster.
 
-AutoPort is a simple GUI that:
-- Auto-fills standardized incident report templates
-- Validates entries so nothing gets submitted incomplete
-- Cuts report time from 45 minutes down to 5 minutes (89% faster)
+## How It Works
 
-## Built With
+AutoPort is a tkinter GUI with pre-configured buttons for common shift tasks. Click a button, and it uses Selenium WebDriver to automatically fill out and submit the hospital's incident report form in the browser.
 
-- Python 3.x for the core logic
+For routine stuff like building tours or equipment checks, it's literally one click. For custom incidents, there's a dialog box where you can add details, and it handles the rest.
+
+## What I Used
+
+- Python 3.x
 - tkinter for the GUI
-- Standard Python libraries for file handling and validation
-- Runs on Windows 10/11
+- Selenium WebDriver with Edge
+- Hospital's existing web-based incident management system
 
-## Features
+## The Buttons
 
-- Easy-to-use interface - I tested it with officers across different age groups and experience levels. Everyone picked it up without issues.
-- Auto-fill templates - Enter your incident details once, and it populates the whole report
-- Validation - Won't let you submit if required fields are missing or formatted wrong
-- Export ready - Generates reports that are ready to submit immediately
-- Actually in use - This isn't just a side project sitting on GitHub. It's deployed and used every day by our security team.
+The interface has buttons for tasks I do every shift:
+- Building tours (NDH Tour, Area Tour, Lights Out)
+- ED post assignments
+- Equipment checks (boiler, radios, keys)
+- Special requests (OB badge access)
+- Foot patrols with custom route tracking
+- General custom reports
 
-## Setup
+Each button auto-fills the incident type, location, timestamp, and description. The form validates everything before submission so nothing gets kicked back.
 
-Clone it:
+## Setting It Up
+
+Clone the repo:
 git clone https://github.com/yourusername/autoport.git
 
-Go to the folder:
-cd autoport
-
-Install what you need:
+Install Selenium:
 pip install selenium
 
-You'll also need the dev version of Microsoft Edge installed.
+Download Microsoft Edge WebDriver and update the driver path in the code to wherever you put it.
 
-## How to Use It
+Note: This is configured for my hospital's specific incident system. You'd need to modify the form field IDs and values for a different setup.
 
-1. Fire up the application
-2. Fill out the incident form:
-   - When it happened
-   - Where it happened
-   - Who was involved
-   - What happened
-   - What you did about it
-3. Hit "Generate Report"
-4. Double-check it and export
+## Running It
 
-## Real Impact
+Just run the script:
+python autoport.py
 
-- Time saved: 89% reduction (45 min to 5 min per report)
-- Volume: Handles 100+ incidents monthly
-- Accuracy: No more typos or missed fields from manual entry
+The GUI pops up with all the preset buttons. Click what you need, confirm if it asks for extra details, and it submits the report automatically.
 
-## What's Next
+## What It Actually Does
 
-I'm thinking about adding:
-- A database backend to track incidents over time and spot trends
-- Direct PDF export
-- Multi-user access with different permission levels
-- Hooks into the hospital's existing incident management system
-- Automatic routing so reports go to the right people
+When you click a button, the script:
+1. Launches Edge in the background
+2. Navigates to the incident report page
+3. Auto-fills date, time, facility, incident type, and description
+4. Submits the form
+5. Confirms submission
 
-## Want to Contribute?
+For foot patrols, there's a popup where you can add each location you checked. It builds the route description automatically.
 
-This started as a portfolio project, but I'm open to feedback. If you've got ideas or spot bugs, feel free to open an issue or PR.
+## Real Results
+
+Before AutoPort, filling out these reports took 30-45 minutes per shift depending on how busy it was. Now it's under 5 minutes total.
+
+The security team processes over 100 incidents monthly. That time savings adds up, and officers can actually focus on security instead of paperwork.
+
+Also eliminated the inconsistency problem. Every report follows the same format now, which matters for legal documentation.
+
+## What I Might Add Later
+
+- SQLite database to track submission history
+- Export logs to PDF for backup records
+- Configuration file instead of hardcoded paths
+- Multi-facility support if other sites want to use it
+- Better error logging for troubleshooting
+
+## Notes
+
+This is customized for Nuvance Health's incident system. The form field IDs, facility codes, and incident types are specific to their setup. If you want to adapt this for another system, you'll need to inspect their web forms and update the Selenium selectors.
 
 ## Contact
 
-Thomas Marvin  
-thomasmarvin123@gmail.com  
+Thomas Marvin
+thomasmarvin123@gmail.com
 GitHub: https://github.com/yourusername/autoport
