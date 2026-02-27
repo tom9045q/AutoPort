@@ -1,6 +1,6 @@
 # AutoPort - Automated Incident Report Generator
 
-I built this Python tool to automate security incident reports at my hospital job. It turned a 45-minute manual process into a 5-minute one-click operation.
+I built this Python tool to automate security incident reports at my hospital job. It turned a 45 minute manual process into a 5 minute one click operation.
 
 ## Why I Built This
 
@@ -12,13 +12,13 @@ I needed something faster.
 
 ## How It Works
 
-AutoPort is a tkinter GUI with pre-configured buttons for common shift tasks. Click a button, and it uses Selenium WebDriver to automatically fill out and submit the hospital's incident report form in the browser.
+AutoPort is a tkinter GUI with pre configured buttons for common shift tasks. Click a button, and it uses Selenium WebDriver to automatically fill out and submit the hospital's incident report form in the browser.
 
 For routine stuff like building tours or equipment checks, it's literally one click. For custom incidents, there's a dialog box where you can add details, and it handles the rest.
 
 ## What I Used
 
-- Python 3.x
+- Python 3...
 - tkinter for the GUI
 - Selenium WebDriver with Edge
 - Hospital's existing web-based incident management system
@@ -89,4 +89,4 @@ This is customized for Nuvance Health's incident system. The form field IDs, fac
 
 Thomas Marvin
 thomasmarvin123@gmail.com
-GitHub: https://github.com/yourusername/autoport
+
